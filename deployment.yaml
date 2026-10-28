@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: set14-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: set14-app
+  template:
+    metadata:
+      labels:
+        app: set14-app
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: set14-service
+spec:
+  type: NodePort
+  selector:
+    app: set14-app
+  ports:
+    - port: 80
+      targetPort: 80
